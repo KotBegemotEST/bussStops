@@ -1,0 +1,19 @@
+{
+  "name": "stop-schedule",
+  "version": "1.0.0",
+  "description": "app with buss stops",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KotBegemotEST/bussStops.git"
+  },
+  "author": "Anton Buketov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KotBegemotEST/bussStops/issues"
+  },
+  "homepage": "https://github.com/KotBegemotEST/bussStops#readme"
+}
