@@ -8,6 +8,7 @@ var app = require('../app');
 var debug = require('debug')('stop-schedule:server');
 var http = require('http');
 
+// const routes = require(index.js)
 /**
  * Get port from environment and store in Express.
  */

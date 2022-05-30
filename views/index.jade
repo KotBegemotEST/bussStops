@@ -1,5 +1,18 @@
 extends layout
-
+var classes = ['foo', 'bar', 'baz']
 block content
   h1= title
-  p Welcome to #{title}
+  li.dropdown.btn.btn-default#regions
+    span.glyphicon.glyphicon-th-list
+      |  Piirkonnad
+    ul.dropdown-menu(data-toggle="dropdown")
+      li
+        a(href="#") action
+      li 
+        a(href="#") another action
+
+  input( class = "form-control" placeholder="Username" aria-label="Username" type="text")
+  //- script
+  //-   include main.js
+
+  

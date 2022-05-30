@@ -3,14 +3,20 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "nodemon  ./bin/www"
   },
   "dependencies": {
+    "body-parser": "^1.20.0",
+    "bootstrap4-jade": "^1.0.0-dev",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "express": "~4.16.1",
+    "firebase": "^9.8.1",
     "http-errors": "~1.6.3",
     "jade": "~1.11.0",
-    "morgan": "~1.9.1"
+    "jade-bootstrap": "^1.0.14",
+    "morgan": "~1.9.1",
+    "mysql": "^2.18.1",
+    "mysqlconnector": "^2.0.0"
   }
 }
