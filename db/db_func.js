@@ -23,17 +23,15 @@ async function readStops() {
         })
     };
 
-async function getRegions() {
-    const response = new Promise((resolve, reject) => {
-    const query = "SELECT stops.zone_name FROM stops GROUP BY zone_name;"
-    connection.query(query, (err, results) => {
-        if(err) reject(new Error(err.message));
-            console.log(results);
+function getRegions() {
+    return new Promise((resolve, reject) => {
+        const query = "SELECT stops.zone_name FROM stops GROUP BY zone_name;"
+        connection.query(query, (err, results) => {
+            if (err) reject(new Error(err.message));
+            console.log(results)
             resolve(results);
+
         });
-
-
-
     })
 };
 
