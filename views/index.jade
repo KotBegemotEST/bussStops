@@ -1,18 +1,16 @@
 extends layout
-var classes = ['foo', 'bar', 'baz']
+
 block content
-  h1= title
-  li.dropdown.btn.btn-default#regions
-    span.glyphicon.glyphicon-th-list
-      |  Piirkonnad
-    ul.dropdown-menu(data-toggle="dropdown")
-      li
-        a(href="#") action
-      li 
-        a(href="#") another action
+  h1 Chose region
 
-  input( class = "form-control" placeholder="Username" aria-label="Username" type="text")
-  //- script
-  //-   include main.js
 
-  
+  .wrapper.prety
+
+    .form-row.mb-3
+      label.col-lg-3 	Chose region.
+      .col-lg-7#regionsFocus
+        input( type="text" id="regions_input" name="regions" autocomplete="off" list="")
+        datalist#regions_list
+
+      .col-lg-2
+        input( id = "sendRegions" class="btn btn-block btn-outline-secondary" type='submit' value='show') 

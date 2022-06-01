@@ -6,8 +6,6 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const db_funcs = require("./db/db_func.js")
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
 
 
 var app = express();
@@ -22,36 +20,42 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+var urlencodedParser = bodyParser.urlencoded({ extended: false })
+
 app.get('/', (req, res, next)=>{
-  console.log("рендерим индекс")
   res.render("index")
 })
 
 app.get('/getAllRegions', async  (req, res, next)=>{
   console.log("гет запрос пришел")
   let result = await  db_funcs.getRegions()
-  console.log(result)
+  console.log("гет запрос пришел2")
+
   res.send(result)
 
 })
 
+// app.post('/sendRegion', (req, res, next)=>{
+//   console.log("sendRegion пришел")
+//   // console.log(JSON.parse(req))
+//   console.log(JSON.parse(req.body));
+// })
 
 
-// // catch 404 and forward to error handler
-// app.use(function(req, res, next) {
-//   next(createError(404));
-// });
+app.get('/getAllStops/:stop_area', (request, response) => {
 
-// // error handler
-// app.use(function(err, req, res, next) {
-//   // set locals, only providing error in development
-//   res.locals.message = err.message;
-//   res.locals.error = req.app.get('env') === 'development' ? err : {};
+  console.log("sendRegion пришел")
+  console.log(req.body);
 
-//   // render the error page
-//   res.status(err.status || 500);
-//   res.render('error');
-// });
+  // const stop_area= request.params.stop_area;
+  // const db = dbService.getDbServiceInstance();
+  
+  // const result = db.getAllStops(stop_area);
+
+  result
+  .then(data => response.json({data : data}))
+  .catch(err => console.log(err));
+})
 
 module.exports = app;
 

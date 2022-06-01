@@ -2,16 +2,16 @@ const mysql = require("mysql")
 var pool = require('mysqlConnector');
 const connection = mysql.createPool({
 
-    host:"localhost",
-    user:"root",
-    password:"",
-    database:"bussstops"
+    host:"d26893.mysql.zonevs.eu",
+    user:"d26893_busstops",
+    password:"3w7PYquFJhver0!KdOfF",
+    database:"d26893_busstops"
 })  
 
 
 async function readStops() {
         const response = new Promise((resolve, reject) => {
-        const query = "SELECT * FROM stops"
+        const query = "SELECT * FROM antonBuketov_busStops"
         connection.query(query, (err, results) => {
             if(err) reject(new Error(err.message));
                 // console.log(results);
@@ -25,7 +25,7 @@ async function readStops() {
 
 function getRegions() {
     return new Promise((resolve, reject) => {
-        const query = "SELECT stops.zone_name FROM stops GROUP BY zone_name;"
+        const query = "SELECT stops.zone_name FROM antonBuketov_busStops GROUP BY zone_name;"
         connection.query(query, (err, results) => {
             if (err) reject(new Error(err.message));
             console.log(results)
