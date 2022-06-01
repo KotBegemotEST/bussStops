@@ -1,1 +1,1 @@
-web: node ./bin/wwwr.js
+web: node ./bin/www.js
