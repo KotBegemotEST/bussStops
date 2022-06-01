@@ -1,4 +1,5 @@
 const mysql = require("mysql")
+var pool = require('mysqlConnector');
 const connection = mysql.createPool({
 
     host:"d26893.mysql.zonevs.eu",
