@@ -67,10 +67,6 @@ function getBuses(stop_area,stop_name){
                 resolve(results);
             });
         });
-        return response;
-
-
-
     } catch (error){
         console.log(error);
     }
@@ -130,27 +126,67 @@ function getNearestStops(lat, lon){
     }
 }
 
+
+
+
+// "SELECT st.departure_time, t.direction_code,s.stop_name, t.trip_long_name, r.route_short_name,'today' as day \
+//                 FROM stops s, stop_times st, trips t, routes r \
+//                 WHERE s.stop_id = st.stop_id AND \
+//                 st.trip_id = t.trip_id AND \
+//                 t.route_id = r.route_id AND \
+//                 s.stop_name = ? AND \
+//                 s.stop_area = ? AND \
+//                 st.departure_time > TIME(?) AND\
+//                 r.route_short_name = ?  \
+//                 GROUP BY st.departure_time LIMIT 5";
+
+
+
 function getTimes(stop_area, stop_name, route_short_name, dep_time) {
+    let flag = false
     try{
         return new Promise((resolve, reject) => {
-            const query = "SELECT * FROM ( \
-            SELECT tab_b.* FROM ( \
-            SELECT tab_a.stop_id,tab_a.stop_area,tab_a.stop_name,tab_a.departure_time,tab_a.trip_id,trips.trip_long_name,routes.route_short_name \
-            FROM ( \
-                SELECT stops.stop_area, stops.stop_id, stops.stop_name,stop_times.trip_id, stop_times.departure_time \
-                FROM stops RIGHT JOIN stop_times ON stop_times.stop_id = stops.stop_id \
-                WHERE stop_name = ? AND stop_area = ? AND stop_times.departure_time >= TIME(?) \
-                GROUP BY stops.stop_id, stops.stop_name, stop_times.trip_id ) tab_a \
-            LEFT JOIN trips ON tab_a.trip_id = trips.trip_id \
-            LEFT JOIN routes ON routes.route_id = trips.route_id \
-            WHERE routes.route_short_name = ? \
-            ORDER BY tab_a.departure_time ) tab_b LIMIT 5) tab_c \
-            ORDER BY tab_c.departure_time" ;
+            const query =
+            "SELECT st.departure_time, t.direction_code, t.trip_long_name,s.stop_name ,r.route_short_name ,'today' as day \
+            FROM stops s, stop_times st, trips t, routes r \
+            WHERE s.stop_id = st.stop_id AND \
+            st.trip_id = t.trip_id AND \
+            t.route_id = r.route_id AND \
+            s.stop_name = ? AND \
+            s.stop_area = ? AND \
+            st.departure_time > TIME(?) AND\
+            r.route_short_name = ?  \
+            GROUP BY st.departure_time LIMIT 5";
 
             connection.query(query, [stop_name, stop_area,dep_time, route_short_name], (err, results) => {
                 if(err) reject(new Error(err.message));
-                resolve(results);
+                else if (results.length < 5) {
+                    console.log("когда меньше 5")
+                    const query ="SELECT st.departure_time, t.direction_code, t.trip_long_name,s.stop_name ,r.route_short_name ,'tomorrow' as day \
+                    FROM stops s, stop_times st, trips t, routes r \
+                    WHERE s.stop_id = st.stop_id AND \
+                    st.trip_id = t.trip_id AND \
+                    t.route_id = r.route_id AND \
+                    s.stop_name = ? AND \
+                    s.stop_area = ? AND \
+                    r.route_short_name = ?  \
+                    GROUP BY st.departure_time \
+                    order by st.departure_time\
+                    LIMIT ?";
+                                    connection.query(query, [stop_name, stop_area,dep_time, route_short_name], (err, results) => {
+                                        flag = true
+                                        if(err) reject(new Error(err.message));
+                                        resolve(results);
+
+                                    })
+                            
+                }
+
+                if (!flag) resolve(results);
             });
+
+            
+
         });
         return response;
 

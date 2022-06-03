@@ -209,9 +209,6 @@ getText = async function (url, callback) {
 //---------------------------------------------------------------- Function to show regions in dropdown ---------------------------------------------------------------
 
 
-
-
-
 document.querySelector('#showStops').addEventListener('click', function(){
     const stop_area = region_input.value;
     const stop_name = stops_input.value;
