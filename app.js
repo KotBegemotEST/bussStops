@@ -33,12 +33,6 @@ app.get('/getAllRegions', async  (req, res)=>{
   res.send(result)
 })
 
-// app.post('/sendRegion', (req, res, next)=>{
-//   console.log("sendRegion пришел")
-//   // console.log(JSON.parse(req))
-//   console.log(JSON.parse(req.body));
-// })
-
 
 app.get('/getAllStops/:stop_area',async (request, response) => {
   const stop_area= request.params.stop_area;

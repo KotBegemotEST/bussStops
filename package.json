@@ -20,5 +20,6 @@
     "morgan": "~1.9.1",
     "mysql": "^2.18.1",
     "mysqlconnector": "^2.0.0"
-  }
+  },
+  "main": "app.js"
 }
