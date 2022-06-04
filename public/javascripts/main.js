@@ -1,11 +1,11 @@
 let regOpt = document.querySelector("#regions_list");
 let stopOpt = document.querySelector("#stops_list");
 let sendRegion = document.querySelector("#sendRegions");
-let showStops = document.querySelector("#showStops");
+let showStopsBtn = document.querySelector("#showStops");
 let region_input = document.querySelector("#regions_input")
 let stops_input = document.querySelector("#stops_input")
-//---------------------------------------------------------------- AutoComplite ---------------------------------------------------------------
-function createDataList(inp,opt) {
+
+function createDataList(inp, opt) {
     inp.onfocus = function () {
         opt.style.display = 'block';
         inp.style.borderRadius = "5px 5px 0 0";
@@ -36,7 +36,7 @@ function createDataList(inp,opt) {
             e.preventDefault();
             if (currentFocus > -1) {
                 if (opt.options)
-                opt.options[currentFocus].click();
+                    opt.options[currentFocus].click();
             }
         }
     }
@@ -57,39 +57,35 @@ function removeActive(x) {
 }
 
 
-const div = document.querySelector('#regionsFocus');
+function removeFocusFromSelect(opt, div) {
+    document.addEventListener('click', (e) => {
+        console.log(e.composedPath())
+        const withinBoundaries = e.composedPath().includes(div);
+        if (!withinBoundaries) {
+            opt.style.display = 'none';
+        }
+    })
 
-document.addEventListener('click', (e) => {
-    const withinBoundaries = e.composedPath().includes(div);
+}
 
-    if (!withinBoundaries) {
-        document.getElementById("regions_list").style.display = 'none'; 
-    }
-})
-//---------------------------------------------------------------- AutoComplite ---------------------------------------------------------------
 sendRegion.addEventListener("click", () => {
+    if(stops_input.value != ""){cleaner(flag = false)}
     let stopAreaValue = region_input.value;
-    fetch('/getAllStops/'+stopAreaValue)
-    .then(response => response.json())
-    .then(data => loadStops(data));
-
+    fetch('/getAllStops/' + stopAreaValue)
+        .then(response => response.json())
+        .then(data => showStops(data));
 
 })
-
-
-
-//---------------------------------------------------------------- Function to show regions in dropdown ---------------------------------------------------------------
-
 
 
 function main() {
     if (window.navigator.geolocation) {
-        window.navigator.geolocation.getCurrentPosition(function(position) {
+        window.navigator.geolocation.getCurrentPosition(function (position) {
             const userLat = position.coords.latitude;
             const userLon = position.coords.longitude;
-            setInterval(function(){setLoc(userLat, userLon)},10000);
+            setInterval(function () { setLoc(userLat, userLon) }, 10000);
 
-        }, function(error) {
+        }, function (error) {
             console.log('Geolocation not defined')
         });
     } else {
@@ -97,15 +93,16 @@ function main() {
     }
 
 
-
-
-
-    createDataList(region_input,regOpt);
-    createDataList(stops_input,stopOpt);
+    const regionFocus = document.querySelector('#regionsFocus');
+    const stopsFocus = document.querySelector('#stopsFocus');
+    createDataList(region_input, regOpt);
+    createDataList(stops_input, stopOpt);
+    removeFocusFromSelect(regOpt, regionFocus);
+    removeFocusFromSelect(stopOpt, stopsFocus)
+    document.querySelector(".clear").addEventListener('click', function () { cleaner() });
     getText('/getAllRegions', showRegions);
 
 }
-
 
 function showRegions(data) {
     if (document.querySelector("#regions_input")) {
@@ -128,7 +125,7 @@ function showRegions(data) {
 }
 
 
-function loadStops(data){
+function showStops(data) {
     if (document.querySelector("#stops_input")) {
         let parseResult = data
         for (k in parseResult) {
@@ -149,15 +146,7 @@ function loadStops(data){
 };
 
 
-
-// let regOpt = document.querySelector("#regions_list");
-// let stopOpt = document.querySelector("#stops_list");
-// let sendRegion = document.querySelector("#sendRegions");
-// let showStops = document.querySelector("#showStops");
-// let region_input = document.querySelector("#regions_input")
-// let stops_input = document.querySelector("#stops_input")
-
-function loadBtns(data){
+function showBtns(data) {
     console.log(data)
     const busesCont = document.querySelector('.buses');
     const stop_area = region_input.value;
@@ -165,35 +154,32 @@ function loadBtns(data){
     let datetime = new Date();
     let datetimSplitted = datetime.toLocaleString().split(",");
     const dep_time = datetimSplitted[1].trim();
-    
-    console.log(dep_time);
-    
+
     document.querySelector(".buses").innerHTML = '';
 
     let btns = "<div class='del'>";
 
-    data.forEach(function({route_short_name}) {
-        const btnClass = '.r'+ route_short_name;
-        btns += `<button class="bus r-${route_short_name}">${route_short_name}</buttons>`;
+    data.forEach(function ({ route_short_name }) {
+        const btnClass = '.r' + route_short_name;
+        btns += `<button class="bus r-${route_short_name}  badge badge-info">${route_short_name}</buttons>`;
     });
 
     btns += "</div>";
-    busesCont.innerHTML += btns; 
+    busesCont.innerHTML += btns;
 
-    data.forEach(function({route_short_name}) {
-        const btnClass = '.r-'+ route_short_name;
-        
-        document.querySelector(btnClass).addEventListener('click',function(){
-            
-            fetch('/getStopTimes/'+stop_area+'/'+stop_name+'/'+route_short_name+'/'+dep_time)
-            .then(response => response.json())
-            .then(data => loadTimes(data));
+    data.forEach(function ({ route_short_name }) {
+        const btnClass = '.r-' + route_short_name;
+
+        document.querySelector(btnClass).addEventListener('click', function () {
+
+            fetch('/getStopTimes/' + stop_area + '/' + stop_name + '/' + route_short_name + '/' + dep_time)
+                .then(response => response.json())
+                .then(data => showTimes(data));
         });
-        
+
     });
 };
 
-//---------------------------------------------------------------- Function for ajax get call ---------------------------------------------------------------
 getText = async function (url, callback) {
     let request = new XMLHttpRequest();
     request.onreadystatechange = function () {
@@ -201,67 +187,65 @@ getText = async function (url, callback) {
             callback(request.responseText);
         }
     };
-    console.log("передал гет")
     request.open("GET", url);
     request.send();
 }
-//---------------------------------------------------------------- Function for ajax get call ---------------------------------------------------------------
-//---------------------------------------------------------------- Function to show regions in dropdown ---------------------------------------------------------------
 
 
-document.querySelector('#showStops').addEventListener('click', function(){
+
+document.querySelector('#showStops').addEventListener('click', function () {
     const stop_area = region_input.value;
     const stop_name = stops_input.value;
-    fetch('/getBuses/'+stop_area+'/'+stop_name)
-    .then(response => response.json())
-    .then(data => loadBtns(data));
+    fetch('/getBuses/' + stop_area + '/' + stop_name)
+        .then(response => response.json())
+        .then(data => showBtns(data));
 });
 
 
-function setLoc(lat,lon){
+function setLoc(lat, lon) {
     let datetime = new Date();
-    document.querySelector(".loc").innerHTML = '<b>User location: </b><br> Lat: '+ lat + '<br> Lon: ' + lon;
+    document.querySelector(".loc").innerHTML = '<b>User location: </b><br> Lat: ' + lat + '<br> Lon: ' + lon;
     document.querySelector(".time").innerHTML = '<b>Time: </b>' + datetime.toLocaleString();
 
-    fetch('/getReg/'+lat+'/'+lon)
-    .then(response => response.json())
-    .then(data => setReg(data));
+    fetch('/getReg/' + lat + '/' + lon)
+        .then(response => response.json())
+        .then(data => setReg(data));
 
-    fetch('/getNearestStops/'+lat+'/'+lon)
-    .then(response => response.json())
-    .then(data => setStops(data));
+    fetch('/getNearestStops/' + lat + '/' + lon)
+        .then(response => response.json())
+        .then(data => setStops(data));
 };
 
-function setReg(data){
+function setReg(data) {
     console.log(data)
-    data.forEach(function({stop_area}){
+    data.forEach(function ({ stop_area }) {
         document.querySelector(".user-reg").innerHTML = `Region: ${stop_area}`;
     });
 }
 
-function setStops(data){
+function setStops(data) {
     let pText = 'Nearest stops: '
-    data.forEach(function({stop_name}){
+    data.forEach(function ({ stop_name }) {
         pText += `${stop_name}, `;
     });
 
     document.querySelector(".closes-stops").innerHTML = pText;
 }
 
-function loadTimes(data){
+function showTimes(data) {
     console.log(data);
     const table = document.querySelector('table tbody');
 
     let tableHtml = "";
 
-    if(data.length === 0){
-        table.innerHTML = '<tr><td colspan="5" class="no-data" style="text-align: center;">No data</td></tr>'; 
+    if (data.length === 0) {
+        table.innerHTML = '<tr><td colspan="5" class="no-data" style="text-align: center;">No data</td></tr>';
     }
     else {
         let id = 1;
-        data.forEach(function({route_short_name, departure_time, stop_name, trip_long_name}){
+        data.forEach(function ({ route_short_name, departure_time, stop_name, trip_long_name }) {
             tableHtml += '<tr>';
-            tableHtml += '<td>'+id+'</td>';
+            tableHtml += '<td>' + id + '</td>';
             tableHtml += `<td>${route_short_name}</td>`;
             tableHtml += `<td>${departure_time}</td>`;
             tableHtml += `<td>${stop_name}</td>`;
@@ -272,6 +256,27 @@ function loadTimes(data){
         table.innerHTML = tableHtml;
     }
 };
+
+
+function cleaner(flag= true) {
+    if (flag){
+        region_input.value = '';
+        stops_input.value = '';
+        document.querySelector('#stops_list').innerHTML = '';
+        document.querySelector(".buses").innerHTML = '';
+    }else{
+        stops_input.value = '';
+        document.querySelector('#stops_list').innerHTML = '';
+        document.querySelector(".buses").innerHTML = '';
+    }
+
+    document.querySelector('table tbody').innerHTML = '';
+}
+
+
+
+
+
 window.addEventListener('DOMContentLoaded', (event) => {
     main()
 });

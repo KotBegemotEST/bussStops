@@ -6,30 +6,31 @@ block content
     p.user-reg    
     p.closes-stops  Nearest stops: 
     p.time  Time:  
-  .wrapper.prety
-    .form-row.col-lg-6 	
-      label.col-lg-3 	Chose region.
+  .wrapper.prety.border.rounded
+    .form-row.col-lg-6#regchs
+      label.col-lg-3 	Chose region:
       .col-lg-7#regionsFocus
-        input( type="text" id="regions_input" name="regions" autocomplete="off" list="")
+        input( type="text" class="form-control" id="regions_input" name="regions" autocomplete="off" list="")
         datalist#regions_list
       .col-lg-2
         input( id = "sendRegions" class="btn btn-block btn-outline-secondary" type='submit' value='send') 
     .form-row.col-lg-6 	
-      label.col-lg-3 	Chose stops.
+      label.col-lg-3 	Chose stops:
       .col-lg-7#stopsFocus
-        input( type="text" id="stops_input" name="stops" autocomplete="off" list="")
+        input( type="text" class="form-control" id="stops_input" name="stops" autocomplete="off" list="")
         datalist#stops_list
       .col-lg-2
         input( id = "showStops" class="btn btn-block btn-outline-secondary" type='submit' value='show') 
 
-  .buses(style='margin-bottom: 15px;')
+  .buses
   .top5
-  table.table
-    thead
-      tr
-        th(scope='col') #
-        th(scope='col') Bus
-        th(scope='col') Time
-        th(scope='col') Stop Name
-        th(scope='col') Direction
-    tbody
+    table.table
+      thead
+        tr
+          th(scope='col') #
+          th(scope='col') Bus
+          th(scope='col') Time
+          th(scope='col') Stop Name
+          th(scope='col') Direction
+      tbody
+  button.clear.btn.btn-outline-danger Clear data
