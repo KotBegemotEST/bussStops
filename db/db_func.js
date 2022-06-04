@@ -2,16 +2,16 @@ const mysql = require("mysql")
 var pool = require('mysqlconnector');
 const connection = mysql.createPool({
 
-    host:"localhost",
-    user:"root",
-    password:"",
-    database:"bussstops"
+    host:"d26893.mysql.zonevs.eu",
+    user:"d26893_busstops",
+    password:"3w7PYquFJhver0!KdOfF",
+    database:"d26893_busstops"
 })  
 
 
 async function readStops() {
         const response = new Promise((resolve, reject) => {
-        const query = "SELECT * FROM stops"
+        const query = "SELECT * FROM antonBuketov_busStops"
         connection.query(query, (err, results) => {
             if(err) reject(new Error(err.message));
                 resolve(results);
@@ -24,7 +24,7 @@ async function readStops() {
 
 function getRegions() {
     return new Promise((resolve, reject) => {
-        const query = "SELECT stops.stop_area FROM stops GROUP BY stop_area;"
+        const query = "SELECT stops.stop_area FROM antonBuketov_busStops GROUP BY stop_area;"
         connection.query(query, (err, results) => {
             if (err) reject(new Error(err.message));
             console.log(results)
@@ -36,7 +36,7 @@ function getRegions() {
 function getAllStops(stop_area){
     try{
         return new Promise((resolve, reject) => {
-            const query = "SELECT stop_name FROM stops WHERE stop_area = ? GROUP BY stop_name ORDER BY stop_name;";
+            const query = "SELECT stop_name FROM antonBuketov_busStops WHERE stop_area = ? GROUP BY stop_name ORDER BY stop_name;";
 
             connection.query(query, [stop_area], (err, results) => {
                 if(err) reject(new Error(err.message));
@@ -52,7 +52,7 @@ function getBuses(stop_area,stop_name){
     try {
         return new Promise((resolve, reject) => {
         const query = "SELECT DISTINCT r.route_short_name\
-            FROM stops, stop_times st, trips t, routes r\
+            FROM antonBuketov_busStops, antonBuketov_stopsTimes st, antonBuketov_trips t, antonBuketov_routes r\
             WHERE st.stop_id = stops.stop_id AND \
                   stops.stop_name = ? and \
                   stops.stop_area = ? AND\
@@ -78,7 +78,7 @@ function getReg(lat,lon) {
             ASIN(SQRT( POWER(SIN((? - stop_lat)*pi()/180/2),2) \
             +COS(?*pi()/180 )*COS(stop_lat*pi()/180) \
             *POWER(SIN((?-stop_lon)*pi()/180/2),2)))  \
-            as distance FROM stops WHERE  \
+            as distance FROM antonBuketov_busStops WHERE  \
             stop_lon between (?-0.6/cos(radians(?))*69) \
             and (?+0.6/cos(radians(?))*69) \
             and stop_lat between (?-(0.6/69)) \
@@ -103,7 +103,7 @@ function getNearestStops(lat, lon){
             ASIN(SQRT( POWER(SIN((? - stop_lat)*pi()/180/2),2) \
             +COS(?*pi()/180 )*COS(stop_lat*pi()/180) \
             *POWER(SIN((?-stop_lon)*pi()/180/2),2)))  \
-            as distance FROM stops WHERE  \
+            as distance FROM antonBuketov_busStops WHERE  \
             stop_lon between (?-0.6/cos(radians(?))*69) \
             and (?+0.6/cos(radians(?))*69) \
             and stop_lat between (?-(0.6/69)) \
@@ -129,7 +129,7 @@ function getTimes(stop_area, stop_name, route_short_name, dep_time) {
         return new Promise((resolve, reject) => {
             const query =
             "SELECT st.departure_time, t.direction_code, t.trip_long_name,r.route_short_name,s.stop_name, 'today' as day \
-            FROM stops s, stop_times st, trips t, routes r \
+            FROM antonBuketov_busStops s, antonBuketov_stopsTimes st, antonBuketov_trips t, antonBuketov_routes r \
             WHERE s.stop_id = st.stop_id AND \
             st.trip_id = t.trip_id AND \
             t.route_id = r.route_id AND \
