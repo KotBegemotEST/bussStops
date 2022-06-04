@@ -1,5 +1,5 @@
 const mysql = require("mysql")
-var pool = require('mysqlConnector');
+var pool = require('mysqlconnector');
 const connection = mysql.createPool({
 
     host:"localhost",
