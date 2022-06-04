@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node  ./bin/www"
+    "start": "node  ./bin/www",
+    "start:dev": "nodemon ./bin/www",
+    "heroku-postbuild": "ng build --prod"
   },
   "dependencies": {
     "body-parser": "^1.20.0",
