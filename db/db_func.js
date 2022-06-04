@@ -8,20 +8,6 @@ const connection = mysql.createPool({
     database:"bussstops"
 })  
 
-function tConvert2 (time) {
-    // Check correct time format and split into components
-    time = time.toString ().match (/^([01]\d|2[0-3])(:)([0-5]\d)(:[0-5]\d)?$/) || [time];
-  
-    if (time.length > 1) { // If time format correct
-      time = time.slice (1);  // Remove full string match value
-      time[5] = +time[0] < 12 ? 'AM' : 'PM'; // Set AM/PM
-      time[0] = +time[0] % 12 || 12; // Adjust hours
-    }
-    return time.join (''); // return adjusted time or original string
-  }
-
-
-
 
 async function readStops() {
         const response = new Promise((resolve, reject) => {
@@ -57,8 +43,6 @@ function getAllStops(stop_area){
                 resolve(results);
             });
         });
-        return response;
-
     } catch (error){
         console.log(error);
     }
@@ -106,7 +90,6 @@ function getReg(lat,lon) {
                 resolve(results);
             });
         });
-        return response;
 
     } catch (error){
         console.log(error);
@@ -132,7 +115,6 @@ function getNearestStops(lat, lon){
                 resolve(results);
             });
         });
-        return response;
 
     } catch (error){
         console.log(error);
@@ -163,10 +145,7 @@ function getTimes(stop_area, stop_name, route_short_name, dep_time) {
                 
             });
 
-            
-
         });
-        return response;
 
     } catch (error){
         console.log(error);
