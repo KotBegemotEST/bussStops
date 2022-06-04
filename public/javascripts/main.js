@@ -59,7 +59,6 @@ function removeActive(x) {
 
 function removeFocusFromSelect(opt, div) {
     document.addEventListener('click', (e) => {
-        console.log(e.composedPath())
         const withinBoundaries = e.composedPath().includes(div);
         if (!withinBoundaries) {
             opt.style.display = 'none';
@@ -153,7 +152,8 @@ function showBtns(data) {
     const stop_name = stops_input.value;
     let datetime = new Date();
     let datetimSplitted = datetime.toLocaleString().split(",");
-    const dep_time = datetimSplitted[1].trim();
+    const dep_time = tConvert(datetimSplitted[1].trim());
+    // console.log(dep_time))
 
     document.querySelector(".buses").innerHTML = '';
 
@@ -180,6 +180,24 @@ function showBtns(data) {
     });
 };
 
+
+
+function tConvert (time12h) {
+    const [time, modifier] = time12h.split(' ');
+
+    let [hours, minutes] = time.split(':');
+  
+    if (hours === '12') {
+      hours = '00';
+    }
+  
+    if (modifier === 'PM') {
+      hours = parseInt(hours, 10) + 12;
+    }
+  
+    return `${hours}:${minutes}`;
+  }
+
 getText = async function (url, callback) {
     let request = new XMLHttpRequest();
     request.onreadystatechange = function () {
@@ -190,8 +208,6 @@ getText = async function (url, callback) {
     request.open("GET", url);
     request.send();
 }
-
-
 
 document.querySelector('#showStops').addEventListener('click', function () {
     const stop_area = region_input.value;
@@ -217,7 +233,6 @@ function setLoc(lat, lon) {
 };
 
 function setReg(data) {
-    console.log(data)
     data.forEach(function ({ stop_area }) {
         document.querySelector(".user-reg").innerHTML = `Region: ${stop_area}`;
     });
@@ -233,7 +248,6 @@ function setStops(data) {
 }
 
 function showTimes(data) {
-    console.log(data);
     const table = document.querySelector('table tbody');
 
     let tableHtml = "";

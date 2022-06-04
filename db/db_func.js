@@ -8,13 +8,26 @@ const connection = mysql.createPool({
     database:"bussstops"
 })  
 
+function tConvert2 (time) {
+    // Check correct time format and split into components
+    time = time.toString ().match (/^([01]\d|2[0-3])(:)([0-5]\d)(:[0-5]\d)?$/) || [time];
+  
+    if (time.length > 1) { // If time format correct
+      time = time.slice (1);  // Remove full string match value
+      time[5] = +time[0] < 12 ? 'AM' : 'PM'; // Set AM/PM
+      time[0] = +time[0] % 12 || 12; // Adjust hours
+    }
+    return time.join (''); // return adjusted time or original string
+  }
+
+
+
 
 async function readStops() {
         const response = new Promise((resolve, reject) => {
         const query = "SELECT * FROM stops"
         connection.query(query, (err, results) => {
             if(err) reject(new Error(err.message));
-                // console.log(results);
                 resolve(results);
             });
 
@@ -128,26 +141,12 @@ function getNearestStops(lat, lon){
 
 
 
-
-// "SELECT st.departure_time, t.direction_code,s.stop_name, t.trip_long_name, r.route_short_name,'today' as day \
-//                 FROM stops s, stop_times st, trips t, routes r \
-//                 WHERE s.stop_id = st.stop_id AND \
-//                 st.trip_id = t.trip_id AND \
-//                 t.route_id = r.route_id AND \
-//                 s.stop_name = ? AND \
-//                 s.stop_area = ? AND \
-//                 st.departure_time > TIME(?) AND\
-//                 r.route_short_name = ?  \
-//                 GROUP BY st.departure_time LIMIT 5";
-
-
-
 function getTimes(stop_area, stop_name, route_short_name, dep_time) {
     let flag = false
     try{
         return new Promise((resolve, reject) => {
             const query =
-            "SELECT st.departure_time, t.direction_code, t.trip_long_name,s.stop_name ,r.route_short_name ,'today' as day \
+            "SELECT st.departure_time, t.direction_code, t.trip_long_name,r.route_short_name,s.stop_name, 'today' as day \
             FROM stops s, stop_times st, trips t, routes r \
             WHERE s.stop_id = st.stop_id AND \
             st.trip_id = t.trip_id AND \
@@ -160,29 +159,8 @@ function getTimes(stop_area, stop_name, route_short_name, dep_time) {
 
             connection.query(query, [stop_name, stop_area,dep_time, route_short_name], (err, results) => {
                 if(err) reject(new Error(err.message));
-                else if (results.length < 5) {
-                    console.log("когда меньше 5")
-                    const query ="SELECT st.departure_time, t.direction_code, t.trip_long_name,s.stop_name ,r.route_short_name ,'tomorrow' as day \
-                    FROM stops s, stop_times st, trips t, routes r \
-                    WHERE s.stop_id = st.stop_id AND \
-                    st.trip_id = t.trip_id AND \
-                    t.route_id = r.route_id AND \
-                    s.stop_name = ? AND \
-                    s.stop_area = ? AND \
-                    r.route_short_name = ?  \
-                    GROUP BY st.departure_time \
-                    order by st.departure_time\
-                    LIMIT ?";
-                                    connection.query(query, [stop_name, stop_area,dep_time, route_short_name], (err, results) => {
-                                        flag = true
-                                        if(err) reject(new Error(err.message));
-                                        resolve(results);
-
-                                    })
-                            
-                }
-
-                if (!flag) resolve(results);
+                resolve(results);
+                
             });
 
             

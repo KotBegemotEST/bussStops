@@ -43,8 +43,6 @@ app.get('/getAllRegions', async  (req, res)=>{
 app.get('/getAllStops/:stop_area',async (request, response) => {
   const stop_area= request.params.stop_area;
   const result = await db_funcs.getAllStops(stop_area);
-  console.log("/getAllStops/:stop_area")
-  console.log(result);
   response.send(result)
 
 })
@@ -56,12 +54,7 @@ app.get('/getBuses/:stop_area/:stop_name',async (request, response) => {
   console.log("Region: ", stop_area,"Stop name: ", stop_name)
   
   const result = await db_funcs.getBuses(stop_area,stop_name);
-  console.log("/getBuses/:stop_area/:stop_name")
-  console.log(result);
   response.send(result)
-  // result
-  // .then(data => response.json({data : data}))
-  // .catch(err => console.log(err));
 })
 
 
@@ -69,19 +62,13 @@ app.get('/getReg/:lat/:lon',async (request, response) => {
   const lat = parseFloat(request.params.lat);
   const lon = parseFloat(request.params.lon);
   const result = await db_funcs.getReg(lat,lon);
-  console.log("/getReg/:lat/:lon")
-  console.log(result);
   response.send(result)
 })
 
 app.get('/getNearestStops/:lat/:lon',async (request, response) => {
   const lat = parseFloat(request.params.lat);
-  const lon = parseFloat(request.params.lon);
-  
+  const lon = parseFloat(request.params.lon); 
   const result = await db_funcs.getNearestStops(lat,lon);
-
-  console.log("/getNearestStops/:lat/:lon")
-  console.log(result);
   response.send(result)
 })
 
