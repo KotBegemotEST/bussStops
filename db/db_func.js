@@ -1,6 +1,10 @@
 const mysql = require("mysql")
 var pool = require('mysqlconnector');
 const connection = mysql.createPool({
+    connectionLimit : 1000,
+    connectTimeout  : 60 * 60 * 1000,
+    acquireTimeout  : 60 * 60 * 1000,
+    timeout         : 60 * 60 * 1000,
     host:"d26893.mysql.zonevs.eu",
     user:"d26893_busstops",
     password:"3w7PYquFJhver0!KdOfF",
