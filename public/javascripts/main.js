@@ -220,8 +220,8 @@ document.querySelector('#showStops').addEventListener('click', function () {
 
 function setLoc(lat, lon) {
     let datetime = new Date();
-    document.querySelector(".loc").innerHTML = '<b>User location: </b><br> Lat: ' + lat + '<br> Lon: ' + lon;
-    document.querySelector(".time").innerHTML = '<b>Time: </b>' + datetime.toLocaleString();
+    document.querySelector(".loc").innerHTML = '<span>User location: </span><br> Lat: ' + lat + '<br> Lon: ' + lon;
+    document.querySelector(".time").innerHTML = '<span>Time: </span>' + datetime.toLocaleString();
 
     fetch('/getReg/' + lat + '/' + lon)
         .then(response => response.json())
@@ -234,12 +234,12 @@ function setLoc(lat, lon) {
 
 function setReg(data) {
     data.forEach(function ({ stop_area }) {
-        document.querySelector(".user-reg").innerHTML = `Region: ${stop_area}`;
+        document.querySelector(".user-reg").innerHTML = `<span> Region: ${stop_area} </span>`;
     });
 }
 
 function setStops(data) {
-    let pText = 'Nearest stops: '
+    let pText = '<span>Nearest stops: </span>'
     data.forEach(function ({ stop_name }) {
         pText += `${stop_name}, `;
     });

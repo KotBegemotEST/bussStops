@@ -89,3 +89,7 @@ option:hover{
 #regchs{
   margin-bottom: 15px;
 }
+
+.loc span,.time span, .user-reg span,.closes-stops span{
+  font-weight: 600;
+}
