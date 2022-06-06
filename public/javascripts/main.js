@@ -228,7 +228,7 @@ document.querySelector('#showStops').addEventListener('click', function () {
 function setLoc(lat, lon) {
     let datetime = new Date();
     document.querySelector(".loc").innerHTML = '<span>User location: </span><br> Lat: ' + lat + '<br> Lon: ' + lon;
-    document.querySelector(".time").innerHTML = '<span>Time: </span>' + datetime.toLocaleString();
+    document.querySelector(".time").innerHTML = '<span>Time: </span>' + datetime.toLocaleTimeString('it-IT');
 
     fetch('/getReg/' + lat + '/' + lon)
         .then(response => response.json())
