@@ -155,29 +155,36 @@ function showBtns(data) {
     const dep_time = tConvert(datetimSplitted[1].trim());
     // console.log(dep_time))
 
-    document.querySelector(".buses").innerHTML = '';
+    if(data.length == 0){
+        document.querySelector(".buses").innerHTML = 'no busses, but stop exist';
+    }else{
+        document.querySelector(".buses").innerHTML = '';
 
-    let btns = "<div class='del'>";
-
-    data.forEach(function ({ route_short_name }) {
-        const btnClass = '.r' + route_short_name;
-        btns += `<button class="bus r-${route_short_name}  badge badge-info">${route_short_name}</buttons>`;
-    });
-
-    btns += "</div>";
-    busesCont.innerHTML += btns;
-
-    data.forEach(function ({ route_short_name }) {
-        const btnClass = '.r-' + route_short_name;
-
-        document.querySelector(btnClass).addEventListener('click', function () {
-
-            fetch('/getStopTimes/' + stop_area + '/' + stop_name + '/' + route_short_name + '/' + dep_time)
-                .then(response => response.json())
-                .then(data => showTimes(data));
+        let btns = "<div class='del'>";
+    
+        data.forEach(function ({ route_short_name }) {
+            const btnClass = '.r' + route_short_name;
+            btns += `<button class="bus r-${route_short_name}  badge badge-info">${route_short_name}</buttons>`;
+        });
+    
+        btns += "</div>";
+        busesCont.innerHTML += btns;
+    
+        data.forEach(function ({ route_short_name }) {
+            const btnClass = '.r-' + route_short_name;
+    
+            document.querySelector(btnClass).addEventListener('click', function () {
+    
+                fetch('/getStopTimes/' + stop_area + '/' + stop_name + '/' + route_short_name + '/' + dep_time)
+                    .then(response => response.json())
+                    .then(data => showTimes(data));
+            });
+    
         });
 
-    });
+
+    }
+
 };
 
 
@@ -256,17 +263,25 @@ function showTimes(data) {
         table.innerHTML = '<tr><td colspan="5" class="no-data" style="text-align: center;">No data</td></tr>';
     }
     else {
-        let id = 1;
-        data.forEach(function ({ route_short_name, departure_time, stop_name, trip_long_name }) {
-            tableHtml += '<tr>';
-            tableHtml += '<td>' + id + '</td>';
-            tableHtml += `<td>${route_short_name}</td>`;
-            tableHtml += `<td>${departure_time}</td>`;
-            tableHtml += `<td>${stop_name}</td>`;
-            tableHtml += `<td>${trip_long_name}</td>`;
-            tableHtml += '<tr>';
-            id += 1;
-        });
+        var BreakException = {};
+        try {
+            let id = 1;
+            data.forEach(function ({ route_short_name, departure_time, stop_name, trip_long_name }) {
+                tableHtml += '<tr>';
+                tableHtml += '<td>' + id + '</td>';
+                tableHtml += `<td>${route_short_name}</td>`;
+                tableHtml += `<td>${departure_time}</td>`;
+                tableHtml += `<td>${stop_name}</td>`;
+                tableHtml += `<td>${trip_long_name}</td>`;
+                tableHtml += '<tr>';
+                id += 1;
+                if (id > 5) throw BreakException;
+            });
+          } catch (e) {
+            if (e !== BreakException) throw e;
+          }
+
+
         table.innerHTML = tableHtml;
     }
 };

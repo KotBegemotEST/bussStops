@@ -78,10 +78,22 @@ app.get('/getStopTimes/:stop_area/:stop_name/:route_short_name/:dep_time', async
   const route_short_name= request.params.route_short_name;
   const dep_time = request.params.dep_time;
   console.log(stop_area, stop_name, route_short_name,dep_time);
-  const result = await db_funcs.getTimes(stop_area, stop_name, route_short_name, dep_time);
+  let result = await db_funcs.getTimes(stop_area, stop_name, route_short_name, dep_time);
   console.log("/getStopTimes/:stop_area/:stop_name/:route_short_name/:dep_time")
-  console.log(result);
-  response.send(result)
+  console.log(result.length)
+  if(result.length < 5 ){
+    console.log("меньше 5")
+    result2 = await db_funcs.getTimesLess(stop_area, stop_name, route_short_name, dep_time);
+    console.log("-------result---------")
+    console.log(result)
+    console.log("-------result2---------")
+    console.log(result2)
+    console.log("-------result3---------")
+    console.log(result.concat(result2))
+    
+  }
+  // console.log(result);
+  response.send(result.concat(result2))
 })
 
 
