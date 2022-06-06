@@ -90,10 +90,12 @@ app.get('/getStopTimes/:stop_area/:stop_name/:route_short_name/:dep_time', async
     console.log(result2)
     console.log("-------result3---------")
     console.log(result.concat(result2))
+    response.send(result.concat(result2))
     
+  }else{
+    response.send(result)
   }
-  // console.log(result);
-  response.send(result.concat(result2))
+
 })
 
 
